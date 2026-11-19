@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grafite — Occhiali</title>
+  <link rel="stylesheet" href="css/bootstrap-grid.css">
+  <link rel="stylesheet" href="css/stile_esercizio4.css">
+  <link rel="stylesheet" href="css/configuratore.css">
+  <link rel="stylesheet" href="css/catalogo.css">
+  <link rel="stylesheet" href="css/grafite.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+<body class="pagina-scura">
+
+  <!-- ===== navigazione, versione scura in sovraimpressione sullo stage 3D ===== -->
+  <div class="container-fluid">
+        <div class="row pt-4 pb-5 mb-5 align-items-center">
+            <div class="col-6 col-lg-2">
+              <a href="catalogo.html" class="link-grafite-logo">← Catalogo</a>
+            </div>
+            <div class="col-lg-9 nav-wrapper d-none d-lg-block">
+                <ul class="nav-list">
+                      <li class="nav-item"><a href="scheda.html?file=glb/occhiale-3dm.glb" class="nav-link">Scheda tecnica</a></li>
+                      <li class="nav-item"><a href="#caratteristiche" class="nav-link">Caratteristiche</a></li>
+                      <li class="nav-item"><a href="#misure-dettaglio" class="nav-link">Misure</a></li>
+                      <li class="nav-item"><a href="#personalizza" class="nav-link">Personalizza</a></li>
+                </ul>
+            </div>
+            <div class="col-6 col-lg-1 d-flex justify-content-end align-items-center">
+              <button class="btn btn-menu d-block d-lg-none">Menu</button>
+            </div>
+        </div>
+
+        <div class="mobile-nav-wrapper d-lg-none">
+                 <button class="btn btn-close mb-3">Close</button>
+                <ul class="nav-list">
+                      <li class="nav-item"><a href="catalogo.html" class="nav-link">Catalogo</a></li>
+                      <li class="nav-item"><a href="scheda.html?file=glb/occhiale-3dm.glb" class="nav-link">Scheda tecnica</a></li>
+                      <li class="nav-item"><a href="#caratteristiche" class="nav-link">Caratteristiche</a></li>
+                      <li class="nav-item"><a href="#misure-dettaglio" class="nav-link">Misure</a></li>
+                      <li class="nav-item"><a href="#personalizza" class="nav-link">Personalizza</a></li>
+                </ul>
+        </div>
+    </div>
+
+    <!-- ===== stage 3D: resta agganciato allo schermo mentre si scorre tutta la sezione ===== -->
+    <div id="stage-wrapper" class="stage-wrapper">
+        <div class="stage-sticky">
+            <div id="palco-3d" class="palco-3d"></div>
+
+            <div class="testi-fase">
+                <div id="testo-intro" class="testo-fase testo-intro">
+                    <p class="sovratitolo-grafite">Occhiali · dal disegno Rhino originale</p>
+                    <h1 class="titolo-grafite">Grafite.</h1>
+                    <p class="sottotitolo-grafite">La luce vista da un'altra prospettiva.</p>
+                </div>
+                <div id="testo-chiusura" class="testo-fase">
+                    <h2 class="titolo-fase">Si chiudono da sole.<br>Quasi.</h2>
+                    <p class="corpo-fase">Le stanghette ruotano sul proprio perno, come quando li ripieghi per riporli.</p>
+                </div>
+                <div id="testo-esploso" class="testo-fase">
+                    <h2 class="titolo-fase">Ogni componente,<br>a vista.</h2>
+                    <p class="corpo-fase">19 pezzi separati: montatura, lenti, dettaglio, cerniere. Niente è lasciato al caso.</p>
+                </div>
+                <div id="testo-misura" class="testo-fase">
+                    <h2 class="titolo-fase">Le misure.</h2>
+                    <p class="corpo-fase">Calcolate direttamente dal modello 3D, non stimate.</p>
+                </div>
+            </div>
+
+            <!-- etichette dei componenti durante l'esploso: una per gruppo colorabile,
+                 ancorate al pezzo rappresentativo e proiettate dal 3D allo schermo -->
+            <div class="etichetta-componente" data-gruppo="montatura"><span class="etichetta-pallino"></span>Montatura</div>
+            <div class="etichetta-componente" data-gruppo="lenti"><span class="etichetta-pallino"></span>Lenti</div>
+            <div class="etichetta-componente" data-gruppo="dettaglio"><span class="etichetta-pallino"></span>Dettaglio</div>
+            <div class="etichetta-componente" data-gruppo="cerniere"><span class="etichetta-pallino"></span>Cerniere</div>
+
+            <svg id="svg-misure" class="svg-misure">
+                <line id="linea-larghezza" class="linea-misura"></line>
+                <line id="linea-profondita" class="linea-misura"></line>
+            </svg>
+            <div id="etichetta-larghezza" class="etichetta-misura">
+                <span id="misura-larghezza">—</span><small>Larghezza</small>
+            </div>
+            <div id="etichetta-profondita" class="etichetta-misura">
+                <span id="misura-profondita">—</span><small>Profondità</small>
+            </div>
+
+            <div class="scroll-suggerimento">
+                <span>Scorri</span>
+                <div class="scroll-freccia"></div>
+            </div>
+        </div>
+    </div>
+    <!-- ===== fine stage 3D ===== -->
+
+    <!-- ===== caratteristiche: testo + immagine alternati, come le pagine prodotto Apple ===== -->
+    <div id="caratteristiche" class="sezione-chiara">
+        <div class="container content-wrapper">
+
+            <div class="riga-caratteristica">
+                <div class="colonna-testo">
+                    <p class="sovratitolo-grafite scuro">Montatura</p>
+                    <h3 class="titolo-caratteristica">Scultorea.<br>Non per caso.</h3>
+                    <p class="corpo-caratteristica">La montatura nasce da un disegno Rhino e arriva in 3D come 19 componenti indipendenti: ogni curva, ogni cerniera, ogni vite ha una propria geometria. Il risultato è una struttura che si legge come un unico gesto, ma che — come hai visto scorrendo — si smonta davvero.</p>
+                </div>
+                <div class="colonna-media">
+                    <div class="riquadro-media riquadro-scuro">
+                        <div id="dettaglio-montatura" class="canvas-dettaglio"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="riga-caratteristica inversa">
+                <div class="colonna-testo">
+                    <p class="sovratitolo-grafite scuro">Lenti</p>
+                    <h3 class="titolo-caratteristica">Grigio fumo,<br>non semplice nero.</h3>
+                    <p class="corpo-caratteristica">La lente avvolgente unisce una tinta grigio-grafite a un velo di trasparenza: lascia intravedere lo sguardo invece di nasconderlo del tutto, con una finitura leggermente satinata che riduce i riflessi più duri.</p>
+                </div>
+                <div class="colonna-media">
+                    <div class="riquadro-media riquadro-scuro">
+                        <div id="dettaglio-lenti" class="canvas-dettaglio"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="riga-caratteristica">
+                <div class="colonna-testo">
+                    <p class="sovratitolo-grafite scuro">Cerniere e dettaglio</p>
+                    <h3 class="titolo-caratteristica">Opache al tatto,<br>mai plastica.</h3>
+                    <p class="corpo-caratteristica">Una grana sottile corre su tutta la superficie della montatura, le cerniere hanno una finitura metallica più fredda e l'accento del "dettaglio" spezza il nero con un grigio chiaro: tre materiali distinti, non un unico colore spalmato su tutto.</p>
+                </div>
+                <div class="colonna-media">
+                    <div class="riquadro-media riquadro-scuro">
+                        <div id="dettaglio-stanghette" class="canvas-dettaglio"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="divisore-dettagli"></div>
+
+            <div class="dettagli-strip">
+                <p class="sovratitolo-grafite scuro">In ogni dettaglio</p>
+                <div class="griglia-dettagli">
+
+                    <div class="voce-dettaglio">
+                        <svg class="icona-dettaglio" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+                            <rect x="7" y="7" width="26" height="26" rx="7"></rect>
+                            <path d="M13 13 L27 27 M13 20 L20 27 M20 13 L27 20"></path>
+                        </svg>
+                        <h4 class="titolo-dettaglio">Nylon spazzolato</h4>
+                        <p class="corpo-dettaglio">Una grana sottile corre su tutta la montatura, mai lucida: resiste ai segni di chi la indossa ogni giorno.</p>
+                    </div>
+
+                    <div class="voce-dettaglio">
+                        <svg class="icona-dettaglio" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+                            <ellipse cx="20" cy="20" rx="14" ry="9"></ellipse>
+                            <path d="M8 20c3-5 8-8 12-8s9 3 12 8"></path>
+                        </svg>
+                        <h4 class="titolo-dettaglio">Lente avvolgente</h4>
+                        <p class="corpo-dettaglio">Un'unica lente grigio-fumo che segue la curva del viso, con un velo di trasparenza che lascia intravedere lo sguardo.</p>
+                    </div>
+
+                    <div class="voce-dettaglio">
+                        <svg class="icona-dettaglio" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+                            <circle cx="14" cy="26" r="5"></circle>
+                            <circle cx="26" cy="14" r="5"></circle>
+                            <path d="M17.5 22.5 L22.5 17.5"></path>
+                        </svg>
+                        <h4 class="titolo-dettaglio">Cerniere metalliche</h4>
+                        <p class="corpo-dettaglio">Perni e viti con una finitura più fredda del resto della montatura, per un'apertura precisa stanghetta dopo stanghetta.</p>
+                    </div>
+
+                    <div class="voce-dettaglio">
+                        <svg class="icona-dettaglio" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+                            <rect x="9" y="22" width="22" height="7" rx="2"></rect>
+                            <rect x="11" y="15" width="18" height="7" rx="2"></rect>
+                            <rect x="13" y="8" width="14" height="7" rx="2"></rect>
+                        </svg>
+                        <h4 class="titolo-dettaglio">19 componenti</h4>
+                        <p class="corpo-dettaglio">Dal disegno Rhino al modello 3D, ogni pezzo è un file a parte, anche il più piccolo: non una texture disegnata sopra.</p>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ===== misure in dettaglio: scheda tecnica, stile specifiche Apple ===== -->
+    <div id="misure-dettaglio" class="sezione-scura">
+        <div class="container content-wrapper">
+            <p class="sovratitolo-grafite">Scheda tecnica</p>
+            <h2 class="titolo-sezione">In numeri.</h2>
+
+            <div class="griglia-specifiche">
+                <div class="voce-specifica">
+                    <span class="valore-specifica" id="specifica-larghezza">—</span>
+                    <span class="etichetta-specifica">Larghezza frontale</span>
+                </div>
+                <div class="voce-specifica">
+                    <span class="valore-specifica" id="specifica-altezza">—</span>
+                    <span class="etichetta-specifica">Altezza lente</span>
+                </div>
+                <div class="voce-specifica">
+                    <span class="valore-specifica" id="specifica-profondita">—</span>
+                    <span class="etichetta-specifica">Lunghezza stanghetta</span>
+                </div>
+                <div class="voce-specifica">
+                    <span class="valore-specifica">19</span>
+                    <span class="etichetta-specifica">Componenti separati</span>
+                </div>
+                <div class="voce-specifica">
+                    <span class="valore-specifica">Rhino → glTF</span>
+                    <span class="etichetta-specifica">Origine del modello</span>
+                </div>
+                <div class="voce-specifica">
+                    <span class="valore-specifica">Montatura, lenti,<br>dettaglio, cerniere</span>
+                    <span class="etichetta-specifica">Componenti colorabili</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== personalizza i tuoi: seconda scena 3D indipendente, colori dal vivo
+         e prova virtuale con la fotocamera ===== -->
+    <div id="personalizza" class="sezione-chiara sezione-personalizza">
+        <div class="container content-wrapper">
+            <p class="sovratitolo-grafite scuro">Personalizza</p>
+            <h2 class="titolo-sezione scuro">Fanne un altro paio.</h2>
+            <p class="corpo-caratteristica">Scegli un colore per ogni componente — gli stessi quattro gruppi che hai visto nell'esploso — e provali sul tuo viso con la fotocamera, direttamente da qui.</p>
+
+            <div class="riga-personalizza">
+                <div class="colonna-visore">
+                    <div id="palco-personalizza" class="palco-personalizza"></div>
+                </div>
+                <div class="colonna-pannello">
+                    <div class="opzione settori-colore" id="personalizza-colori">
+                        <h3 class="opzione-titolo">Colore per componente</h3>
+                    </div>
+                    <div class="opzione">
+                        <button type="button" id="apri-prova-virtuale" class="btn-principale">Provali con la fotocamera</button>
+                        <p class="nota-prova">Il riconoscimento del volto gira nel tuo browser: nessuna immagine viene inviata altrove.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- il riquadro a schermo intero della prova virtuale: nascosto finché non si apre -->
+    <div id="prova-virtuale" class="prova-virtuale" hidden>
+        <div class="prova-virtuale-schermo">
+            <video id="prova-video" autoplay playsinline muted></video>
+            <canvas id="prova-canvas"></canvas>
+            <p id="prova-stato" class="prova-stato"></p>
+
+            <div id="prova-regolazione" class="prova-regolazione" hidden>
+                <button type="button" id="prova-rimpicciolisci" aria-label="Rimpicciolisci">−</button>
+                <span>Dimensione</span>
+                <button type="button" id="prova-ingrandisci" aria-label="Ingrandisci">+</button>
+            </div>
+
+            <button type="button" id="prova-scatta" class="prova-scatta" hidden>Scatta la foto</button>
+        </div>
+        <button type="button" id="chiudi-prova-virtuale" class="prova-chiudi" aria-label="Chiudi la prova virtuale">×</button>
+
+        <div id="prova-risultato" class="prova-risultato" hidden>
+            <img id="prova-foto" alt="La foto scattata con gli occhiali virtuali">
+            <div class="prova-risultato-azioni">
+                <button type="button" id="prova-condividi" class="btn-principale">Condividi la foto</button>
+                <button type="button" id="prova-scarica" class="prova-link">Scarica la foto</button>
+                <div class="prova-link-piattaforme">
+                    <button type="button" id="prova-instagram" class="prova-link">Instagram</button>
+                    <a id="prova-telegram" class="prova-link" href="#" target="_blank" rel="noopener">Telegram</a>
+                    <a id="prova-whatsapp" class="prova-link" href="#" target="_blank" rel="noopener">WhatsApp</a>
+                </div>
+                <p class="prova-nota-instagram">Instagram non ha un indirizzo web per ricevere foto: il bottone apre il pannello di condivisione del telefono, dove su mobile trovi anche Instagram tra le app.</p>
+                <button type="button" id="prova-riprova" class="prova-link">← Scatta un'altra foto</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== chiusura in grande stile, come le ultime schermate dei prodotti Apple ===== -->
+    <div class="sezione-chiusura">
+        <h2 class="titolo-chiusura">Grafite.</h2>
+        <p class="sottotitolo-chiusura">Disegnati, scomposti, rimontati. Un progetto della Triennale Milano.</p>
+        <div class="azioni-chiusura">
+            <a href="#personalizza" class="btn-chiusura btn-chiusura-pieno">Personalizza i tuoi</a>
+            <a href="catalogo.html" class="btn-chiusura btn-chiusura-contorno">Torna al catalogo</a>
+        </div>
+    </div>
+
+    <!-- ===== piè di pagina, stile legale Apple ===== -->
+    <footer class="piede-grafite">
+        <div class="container content-wrapper">
+            <p class="piede-testo">Grafite è un progetto dimostrativo realizzato per il catalogo 3D della Triennale Milano, a partire dal modello in Rhino usato anche nel configuratore degli occhiali. Non è un prodotto in vendita.</p>
+            <div class="piede-link">
+                <a href="catalogo.html">Torna al catalogo</a>
+                <a href="scheda.html?file=glb/occhiale-3dm.glb">Scheda del modello</a>
+                <a href="occhiali.html">Configuratore Oakley</a>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module" src="js/grafite.js"></script>
+
+</body>
+</html>
